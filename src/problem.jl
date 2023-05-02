@@ -38,7 +38,7 @@ $(TYPEDSIGNATURES)
 Show the title and the types of the model and the solution of the optimal control problem.
 
 ```@example
-julia> Problem(:integrator, :energy, :state_dim_2, :control_dim_1)
+julia> Problem(:integrator, :energy, :x_dim_2, :u_dim_1)
 title           = Double integrator - energy min
 model    (Type) = CTBase.OptimalControlModel{:autonomous, :scalar}
 solution (Type) = CTBase.OptimalControlSolution
@@ -137,7 +137,7 @@ _problems_without_dummy() = Tuple(setdiff(problems, ((:dummy,),)))
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems descriptions consistent with the description, as a Tuple of Description, 
+Return the list of problems descriptions consistent with the description, as a Tuple of Description, 
 see the page [list of problems descriptions](@ref descriptions-list) for details.
 
 # Example
@@ -147,17 +147,19 @@ julia> ProblemsDescriptions(:integrator, :energy)
 ```
 
 """
-function ProblemsDescriptions(description...)::Tuple{Vararg{Description}}
-    desc = makeDescription(description...)
-    problems_list = filter(pb -> desc ⊆ pb, _problems_without_dummy()) # filter only the problems that contain desc
+function ProblemsDescriptions(description::Symbol...)::Tuple{Vararg{Description}}
+    problems_list = filter(pb -> description ⊆ pb, _problems_without_dummy()) # filter only the problems that contain desc
     return problems_list
 end
 
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
-see the page [list of problems](@ref problems-list) for details.
+Return the list of optimal control problems consistent with the description.
+
+If you give a partial description, then, if several complete descriptions contains the partial one, then, 
+only the problem with the highest priority is returned. The higher in the list, the higher is the priority.
+See the [list of descriptions](@ref descriptions-list) to check the priorities.
 
 # Example
 
@@ -165,8 +167,12 @@ see the page [list of problems](@ref problems-list) for details.
 julia> Problems(:integrator, :energy)
 ```
 
+# See also
+
+See the [list of problems descriptions](@ref descriptions-list) or the 
+[list of problems](@ref problems-list) to view all the existing problems.
 """
-function Problems(description...)::Tuple{Vararg{OptimalControlProblem}}
+function Problems(description::Symbol...)::Tuple{Vararg{OptimalControlProblem}}
     problems_list = ProblemsDescriptions(description...)
     return map(e -> OCPDef{e}(), problems_list)   # return the list of problems that match desc
 end
@@ -174,8 +180,11 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the optimal control problem described by `description`.
-See the [Introduction](@ref introduction) and page [list of problems](@ref problems-list) for details.
+Return the optimal control problem described by `description`.
+
+If you give a partial description, then, if several complete descriptions contains the partial one, then, 
+only the problem with the highest priority is returned. The higher in the list, the higher is the priority.
+See the [list of descriptions](@ref descriptions-list) to check the priorities.
 
 # Example
 
@@ -183,40 +192,61 @@ See the [Introduction](@ref introduction) and page [list of problems](@ref probl
 julia> Problem(:integrator, :energy)
 ```
 
+# See also
+
+See the [list of problems descriptions](@ref descriptions-list) or the 
+[list of problems](@ref problems-list) to view all the existing problems.
 """
-function Problem(description...) 
-    example = getFullDescription(makeDescription(description...), problems)
+function Problem(description::Symbol...)::OptimalControlProblem 
+    example = getFullDescription(description, problems)
     return OCPDef{example}()
+end
+
+# more sophisticated filters
+"""
+$(TYPEDSIGNATURES)
+
+If `e.value` is a Symbol, then return `e.value ∈ description`.
+
+"""
+function _keep(description::Description, e::QuoteNode)
+    @assert e.value isa Symbol
+    return e.value ∈ description
 end
 
 """
 $(TYPEDSIGNATURES)
 
-A binding to [CTBase.jl](https://control-toolbox.github.io/CTBase.jl) plot function.
+If `e.value` is a Symbol and if s is the Symbol "!", then return `e.value ∉ description`.
 
 """
-function CTProblems.plot(sol; kwargs...)
-    return CTBase.plot(sol; kwargs...)
-end
-
-# more sophisticated filters
-function _keep(description::Description, e::QuoteNode)
-    return e.value ∈ description
-end
-
-function _keep(description::Description, s::Symbol, q::QuoteNode)
+function _keep(description::Description, s::Symbol, e::QuoteNode)
     @assert s == Symbol("!")
-    return q.value ∉ description
+    @assert e.value isa Symbol
+    return e.value ∉ description
 end
 
+"""
+$(TYPEDSIGNATURES)
+
+If s is the Symbol "!", then return `!_keep(description, e)`.
+
+"""
 function _keep(description::Description, s::Symbol, e::Expr)
     @assert s == Symbol("!")
     return !_keep(description, e)
 end
 
+"""
+$(TYPEDSIGNATURES)
+
+Return if `description` is consistent with the expression `e`.
+
+"""
 function _keep(description::Description, e::Expr)
     @assert hasproperty(e, :head) 
     @assert e.head == :call
+    @assert length(e.args) == 2 || length(e.args) == 3
     if length(e.args) == 2
         return _keep(description, e.args[1], e.args[2])
     elseif length(e.args) == 3
@@ -226,43 +256,13 @@ function _keep(description::Description, e::Expr)
         elseif e.args[1] == Symbol("&")
             return _keep(description, e.args[2]) && _keep(description, e.args[3])
         end
-    else
-        error("bad expression")
     end
 end
 
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
-see the [list of problems descriptions](@ref descriptions-list) page for details.
-
-# Example
-
-```@example
-julia> ProblemsDescriptions(:(:integrator & :energy))
-```
-
-# See also 
-
-[`@ProblemsDescriptions`](@ref) for a more natural usage.
-
-!!! note
-
-    You have to define a logical condition with the combination of symbols and the three 
-    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
-
-"""
-function ProblemsDescriptions(expr::Union{QuoteNode, Expr})::Tuple{Vararg{Description}}
-    problems_list = filter(description -> _keep(description, expr), _problems_without_dummy()) # filter only the problems that contain desc
-    return problems_list
-end
-
-"""
-$(TYPEDSIGNATURES)
-
-Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
-see the [list of problems descriptions](@ref descriptions-list) page for details.
+Return the list of problems descriptions consistent with the expression.
 
 # Example
 
@@ -270,34 +270,10 @@ see the [list of problems descriptions](@ref descriptions-list) page for details
 julia> @ProblemsDescriptions :integrator & :energy
 ```
 
-!!! note
-
-    You have to define a logical condition with the combination of symbols and the three 
-    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
-
-"""
-macro ProblemsDescriptions(expr::Union{QuoteNode, Expr})
-    return ProblemsDescriptions(expr)
-end
-macro ProblemsDescriptions()
-    return ProblemsDescriptions()
-end
-
-"""
-$(TYPEDSIGNATURES)
-
-Returns the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
-see the page [list of problems](@ref problems-list) for details.
-
-# Example
-
-```@example
-julia> Problems(:(:integrator & :energy))
-```
-
 # See also
 
-[`@Problems`](@ref) for a more natural usage.
+See the [list of problems descriptions](@ref descriptions-list) or the 
+[list of problems](@ref problems-list) to view all the existing problems.
 
 !!! note
 
@@ -305,16 +281,19 @@ julia> Problems(:(:integrator & :energy))
     operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
-function Problems(expr::Union{QuoteNode, Expr})::Tuple{Vararg{OptimalControlProblem}}
-    problems_list = ProblemsDescriptions(expr)
-    return map(e -> OCPDef{e}(), problems_list)   # return the list of problems that match desc
+macro ProblemsDescriptions(expr::Union{QuoteNode, Expr}=:())
+    if expr == :()
+        return _problems_without_dummy()
+    else
+        problems_list = filter(description -> _keep(description, expr), _problems_without_dummy()) # filter only the problems that contain desc
+        return problems_list
+    end
 end
 
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
-see the page [list of problems](@ref problems-list) for details.
+Return the list of problems consistent with the description.
 
 # Example
 
@@ -322,15 +301,23 @@ see the page [list of problems](@ref problems-list) for details.
 julia> @Problems :integrator & :energy
 ```
 
+# See also
+
+See the [list of problems descriptions](@ref descriptions-list) or the 
+[list of problems](@ref problems-list) to view all the existing problems.
+
 !!! note
 
     You have to define a logical condition with the combination of symbols and the three 
     operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
-macro Problems(expr::Union{QuoteNode, Expr})
-    return Problems(expr)
-end
-macro Problems()
-    return Problems()
+macro Problems(expr::Union{QuoteNode, Expr}=:())
+    problems_list = nothing
+    if expr == :()
+        problems_list = _problems_without_dummy()
+    else
+        problems_list = filter(description -> _keep(description, expr), _problems_without_dummy()) # filter only the problems that contain desc
+    end
+    return map(e -> OCPDef{e}(), problems_list)   # return the list of problems that match desc
 end

@@ -1,4 +1,4 @@
-EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :control_non_differentiable)
+EXAMPLE=(:exponential, :consumption, :x_dim_1, :u_dim_1, :lagrange, :non_diff_wrt_u)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -17,7 +17,7 @@ EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :c
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :control, -1, 1, :control_constraint) 
+    constraint!(ocp, :control, -1, 1, :u_cons) 
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
     objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
 

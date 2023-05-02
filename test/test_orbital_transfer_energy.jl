@@ -1,7 +1,7 @@
 function test_orbital_transfer_energy()
 
     # problem = model + solution
-    prob = Problem(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange) 
+    prob = Problem(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

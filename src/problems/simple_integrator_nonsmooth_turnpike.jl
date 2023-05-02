@@ -1,4 +1,4 @@
-EXAMPLE=(:turnpike, :integrator, :state_energy, :state_dim_1, :control_dim_1, :lagrange, :control_constraint, :singular_arc)
+EXAMPLE=(:turnpike, :integrator, :state_energy, :x_dim_1, :u_dim_1, :lagrange, :u_cons, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -17,7 +17,7 @@ EXAMPLE=(:turnpike, :integrator, :state_energy, :state_dim_1, :control_dim_1, :l
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :control, -1, 1, :control_constraint)
+    constraint!(ocp, :control, -1, 1, :u_cons)
     constraint!(ocp, :dynamics, (x, u) -> u)
     objective!(ocp, :lagrange, (x, u) -> x^2) # default is to minimise
 

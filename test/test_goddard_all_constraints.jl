@@ -1,8 +1,8 @@
 function test_goddard_all_constraints()
 
     #
-    prob = Problem(:goddard, :all_constraints, :altitude, :state_dim_3, :control_dim_1, 
-        :mayer, :state_constraint, :control_constraint, :singular_arc)
+    prob = Problem(:goddard, :all_constraints, :altitude, :x_dim_3, :u_dim_1, 
+        :mayer, :x_cons, :u_cons, :singular_arc)
     ocp = prob.model
     sol = prob.solution
     title = prob.title

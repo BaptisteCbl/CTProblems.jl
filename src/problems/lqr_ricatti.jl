@@ -1,4 +1,4 @@
-EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
+EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # 

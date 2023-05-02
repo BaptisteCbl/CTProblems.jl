@@ -12,7 +12,7 @@ This problem will be described by a `Description`, cf. [`CTBase.jl`](https://git
 following the `nomenclature` given in `src/CTProblems.jl`. For instance:
 
 ```julia
-(:orbital, :time, :state_dim_4, control_dim_2, :mayer)
+(:orbital, :time, :x_dim_4, u_dim_2, :mayer)
 ```
 
 **Nomenclature:**
@@ -22,11 +22,11 @@ following the `nomenclature` given in `src/CTProblems.jl`. For instance:
 
 then
 
-- dimensions: `:state_dim_1`, `:state_dim_2`... `:control_dim_1`, `:control_dim_2`...
+- dimensions: `:x_dim_1`, `:x_dim_2`... `:u_dim_1`, `:u_dim_2`...
 - objective type: `:lagrange`, `:mayer`, `:bolza`
-- constraint arc (active on the solution): `:state_constraint`, `:control_constraint`, `:mixed_constraint`
+- constraint arc (active on the solution): `:x_cons`, `:u_cons`, `:mixed_constraint`
 - singular arc (on the solution): `:singular_arc`
-- differentiability: `:state_non_differentiable`, `:control_non_differentiable`
+- differentiability: `:non_diff_wrt_x`, `:non_diff_wrt_u`
 
 ## Create a new file with an empty template
 
@@ -52,7 +52,7 @@ Then, you can write into this file the following empty template.
     It is required to define a variable named `EXAMPLE` containing the description.
 
 ```julia
-EXAMPLE=(:orbital, :time, :state_dim_4, control_dim_2, :mayer)
+EXAMPLE=(:orbital, :time, :x_dim_4, u_dim_2, :mayer)
 
 @eval function OCPDef{EXAMPLE}()
 

@@ -2,8 +2,8 @@ function test_simple_exponential_consumption()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :consumption, :state_dim_1, :control_dim_1, 
-        :lagrange, :control_non_differentiable) 
+    prob = Problem(:exponential, :consumption, :x_dim_1, :u_dim_1, 
+        :lagrange, :non_diff_wrt_u) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -35,7 +35,13 @@ function test_simple_exponential_consumption()
         return (t0, x0, p0, tf, f)
     end
 
+    function objective(ξ)
+        t1 = ξ[2]
+        return (tf-t1)
+    end
+
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
-    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, test_objective=false)
+
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, objective=objective)
 
 end

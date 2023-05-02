@@ -2,7 +2,7 @@ function test_double_integrator_energy_state_constraint()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_constraint, :order_2) 
+    prob = Problem(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -13,7 +13,7 @@ function test_double_integrator_energy_state_constraint()
     # constraint
     l = 1/9
     uc(x, p) = 0
-    g(x) = constraint(ocp, :state_constraint)(x) - l
+    g(x) = constraint(ocp, :x_cons)(x) - l
     μc(x, p) = 0
     fc = Flow(ocp, uc, (x, _) -> g(x), μc)
 

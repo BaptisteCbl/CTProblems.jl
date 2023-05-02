@@ -22,7 +22,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza)
+prob = Problem(:integrator, :energy, :distance, :x_dim_2, :u_dim_1, :bolza)
 ```
 
 Then, the model is given by

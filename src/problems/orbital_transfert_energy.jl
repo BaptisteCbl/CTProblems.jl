@@ -1,4 +1,4 @@
-EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange)
+EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # 

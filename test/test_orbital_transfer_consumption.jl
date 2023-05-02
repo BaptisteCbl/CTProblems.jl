@@ -1,7 +1,7 @@
 function test_orbital_transfer_consumption()
 
     # problem = model + solution
-    prob = Problem(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagrange, :control_constraint) 
+    prob = Problem(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_cons) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -57,7 +57,14 @@ function test_orbital_transfer_consumption()
         f = f1 * (t1, f0) * (t2, f1) * (t3, f0) * (t4, f1)
         return (t0, x0, p0, tf, f)
     end
+
+    function objective(ξ)
+        t1, t2, t3, t4 = ξ[5:8]
+        return (t1-t0)+(t3-t2)+(tf-t4)
+    end
+
     nle = (s, ξ) -> shoot!(s, ξ[1:4], ξ[5:8]...)
-    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, test_objective=false)
+
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, objective=objective)
 
 end

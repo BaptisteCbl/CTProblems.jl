@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control_constraint)
+EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :u_cons)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -23,7 +23,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     B = [ 0
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    constraint!(ocp, :control, -γ, γ, :control_constraint)
+    constraint!(ocp, :control, -γ, γ, :u_cons)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
@@ -69,15 +69,19 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
         s[2] = h(α,β) - xf[2]
     end
 
+    #=
     #using MINPACK
     p0_ini = [1.5*2*γ/tf, 1.5*γ]
     ξ = [p0_ini[1],p0_ini[2]]
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
     indirect_sol = fsolve(nle, ξ, show_trace=false)
     #println(indirect_sol)
-     
-    # the result of the newton method is [12.90994448735837, 6.454972243678883]
     p0 = indirect_sol.x
+    =#
+     
+    p0 = [12.90994448735837, 6.454972243678883]
+
+    # the result of the newton method is [12.90994448735837, 6.454972243678883]
     x(t) = (t ≤ t1(p0)) * x_arc_1(t,p0) + (t1(p0) < t < t2(p0)) * x_arc_2(t,p0) + (t ≥ t2(p0)) * x_arc_3(t,p0)
     p(t) = [p0[1], -p0[1]*t+p0[2]]
     u(t) = (t ≤ t1(p0)) * γ + (t1(p0) < t < t2(p0)) * p(t)[2] + (t ≥ t2(p0)) * (-γ)

@@ -1,4 +1,4 @@
-EXAMPLE=(:exponential, :time, :state_dim_1, :control_dim_1, :lagrange)
+EXAMPLE=(:exponential, :time, :x_dim_1, :u_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
@@ -19,7 +19,7 @@ EXAMPLE=(:exponential, :time, :state_dim_1, :control_dim_1, :lagrange)
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :control, -γ, γ, :control_constraint) # constraints can be labeled or not
+    constraint!(ocp, :control, -γ, γ, :u_cons) # constraints can be labeled or not
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
     objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf, :min)
 

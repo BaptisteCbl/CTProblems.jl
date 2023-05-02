@@ -102,7 +102,7 @@ You can access the problem from the `CTProblems.jl` package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints)
+prob = Problem(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :noconstraints)
 ```
 
 Then, the model is given by

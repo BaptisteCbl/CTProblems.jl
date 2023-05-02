@@ -1,7 +1,7 @@
 function test_orbital_transfer_time()
 
     # problem = model + solution
-    prob = Problem(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :control_constraint) 
+    prob = Problem(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

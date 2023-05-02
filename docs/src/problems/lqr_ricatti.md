@@ -22,7 +22,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:lqr, :state_dim_2, :control_dim_1, :lagrange)
+prob = Problem(:lqr, :x_dim_2, :u_dim_1, :lagrange)
 ```
 
 Then, the model is given by

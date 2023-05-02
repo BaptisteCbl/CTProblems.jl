@@ -2,7 +2,7 @@ function test_simple_integrator_energy_free_tf()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :free_final_time, :state_dim_1, :control_dim_1, :lagrange) 
+    prob = Problem(:integrator, :energy, :free_final_time, :x_dim_1, :u_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

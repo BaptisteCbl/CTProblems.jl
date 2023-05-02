@@ -1,4 +1,4 @@
-EXAMPLE=(:goddard, :classical, :altitude, :state_dim_3, :control_dim_1, :mayer, :state_constraint, :control_constraint, :singular_arc)
+EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :u_cons, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution
@@ -33,9 +33,9 @@ EXAMPLE=(:goddard, :classical, :altitude, :state_dim_3, :control_dim_1, :mayer, 
 
     constraint!(ocp, :initial, x0, :initial_constraint) # initial condition
     constraint!(ocp, :final, Index(3), mf, :final_constraint)
-    constraint!(ocp, :control, 0, 1, :control_constraint) # constraints can be labeled or not
-    constraint!(ocp, :state, Index(1), r0, Inf,  :state_constraint_r)
-    constraint!(ocp, :state, Index(2), 0, vmax,  :state_constraint_v)
+    constraint!(ocp, :control, 0, 1, :u_cons) # constraints can be labeled or not
+    constraint!(ocp, :state, Index(1), r0, Inf,  :x_cons_r)
+    constraint!(ocp, :state, Index(2), 0, vmax,  :x_cons_v)
     #
 
     objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
@@ -66,7 +66,7 @@ EXAMPLE=(:goddard, :classical, :altitude, :state_dim_3, :control_dim_1, :mayer, 
     H101 = Poisson(H1, H01)
     us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
     #
-    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x) = vmax-constraint(ocp, :x_cons_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 

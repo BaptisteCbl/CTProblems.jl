@@ -2,7 +2,7 @@ function test_simple_integrator_lqr_free_tf()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza) 
+    prob = Problem(:integrator, :lqr, :free_final_time, :x_dim_1, :u_dim_1, :bolza) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

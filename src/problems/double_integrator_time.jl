@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_constraint)
+EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -17,7 +17,7 @@ EXAMPLE=(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_cons
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final,   xf, :final_constraint)
-    constraint!(ocp, :control, -γ, γ, :control_constraint)
+    constraint!(ocp, :control, -γ, γ, :u_cons)
     A = [ 0 1
         0 0 ]
     B = [ 0

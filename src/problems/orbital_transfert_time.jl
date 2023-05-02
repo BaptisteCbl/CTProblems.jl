@@ -1,4 +1,4 @@
-EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :control_constraint)
+EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -25,7 +25,7 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
-    constraint!(ocp, :control, u -> norm(u), 0, γ_max, :control_constraint)
+    constraint!(ocp, :control, u -> norm(u), 0, γ_max, :u_cons)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
 

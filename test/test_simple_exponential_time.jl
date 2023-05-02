@@ -2,7 +2,7 @@ function test_simple_exponential_time()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :time, :state_dim_1, :control_dim_1, :lagrange) 
+    prob = Problem(:exponential, :time, :x_dim_1, :u_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

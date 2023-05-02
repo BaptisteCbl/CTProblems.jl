@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints)
+EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :noconstraints)
 
 @eval function OCPDef{EXAMPLE}()
     # 

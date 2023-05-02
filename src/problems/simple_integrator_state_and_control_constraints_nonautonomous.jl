@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_constraint, :nonautonomous)
+EXAMPLE=(:integrator, :state_dime_1, :lagrange, :x_cons, :u_cons, :nonautonomous)
 
 @eval function OCPDef{EXAMPLE}()
     # 
@@ -16,8 +16,8 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_cons
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :control, 0, 3, :control_constraint)
-    constraint!(ocp, :state, (t, x) -> 1-x-(t-2)^2, -Inf, 0, :state_constraint)
+    constraint!(ocp, :control, 0, 3, :u_cons)
+    constraint!(ocp, :state, (t, x) -> 1-x-(t-2)^2, -Inf, 0, :x_cons)
     constraint!(ocp, :dynamics, (t, x, u) -> u)
     objective!(ocp, :lagrange, (t, x, u) -> exp(-α*t)*u)
 

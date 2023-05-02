@@ -2,7 +2,7 @@ function test_simple_exponential_energy()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange) 
+    prob = Problem(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

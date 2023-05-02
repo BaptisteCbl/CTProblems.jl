@@ -9,7 +9,7 @@ ProblemsDescriptions()
 
 You can use more sophisticated rules to filter. You simply have to define a logical condition with the combination of symbols and the three operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
-Here is an example to get the problems, as a tuple of `Description`, whom description does not contain `:lagrange`, or contains `:time` (the `or` is not exclusive):
+Here is an example to get the problems descriptions which does not contain `:lagrange`, or contains `:time` (the `or` is not exclusive):
 
 ```@example main
 @ProblemsDescriptions !:lagrange | :time

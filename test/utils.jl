@@ -37,7 +37,8 @@ function final_condition(ocp::OptimalControlModel) # pre-condition: there is a x
     return xf
 end
 
-function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title; display=false, flow=:ocp, test_objective=true)
+function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title; 
+            display=false, flow=:ocp, test_objective=true, objective=nothing)
 
     # solve
     # MINPACK needs a vector of Float64
@@ -95,7 +96,11 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title; display=fa
             end
         end
         if test_objective
-            if !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
+            if !isnothing(objective)
+                @testset "objective - perso" begin
+                    @test objective(ξ⁺) ≈ sol.objective atol=atol
+                end
+            elseif !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
                 # Mayer case
                 @testset "objective - mayer case" begin
                     @test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol

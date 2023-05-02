@@ -1,7 +1,7 @@
 function test_double_integrator_energy_distance()
 
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza) 
+    prob = Problem(:integrator, :energy, :distance, :x_dim_2, :u_dim_1, :bolza) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

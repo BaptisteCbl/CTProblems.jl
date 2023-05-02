@@ -23,7 +23,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint)
+prob = Problem(:integrator, :x_dim_1, :u_dim_1, :lagrange, :mixed_constraint)
 ```
 
 Then, the model is given by

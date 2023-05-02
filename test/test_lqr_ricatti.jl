@@ -1,7 +1,7 @@
 function test_lqr_ricatti()
 
     # problem = model + solution
-    prob = Problem(:lqr, :state_dim_2, :control_dim_1, :lagrange)
+    prob = Problem(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     ocp = prob.model
     sol = prob.solution
     title = prob.title

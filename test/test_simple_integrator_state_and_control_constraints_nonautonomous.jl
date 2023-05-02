@@ -2,7 +2,7 @@ function test_simple_integrator_state_and_control_constraints_nonautonomous()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_constraint, :nonautonomous) 
+    prob = Problem(:integrator, :state_dime_1, :lagrange, :x_cons, :u_cons, :nonautonomous) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -13,7 +13,7 @@ function test_simple_integrator_state_and_control_constraints_nonautonomous()
     # constraint
     α=1
     uc(t, x, p) = -2*(t-2)
-    g(t, x) = constraint(ocp, :state_constraint)(t, x)
+    g(t, x) = constraint(ocp, :x_cons)(t, x)
     μc(t, x, p) = -α*p
     fc = Flow(ocp, uc, (t, x, _) -> g(t, x), μc)
 

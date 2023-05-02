@@ -16,7 +16,7 @@ and the limit conditions
 You can access the problem in the CTProblems package:
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza)
+prob = Problem(:integrator, :lqr, :free_final_time, :x_dim_1, :u_dim_1, :bolza)
 nothing # hide
 ```
 

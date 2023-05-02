@@ -1,4 +1,4 @@
-EXAMPLE=(:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange)
+EXAMPLE=(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution

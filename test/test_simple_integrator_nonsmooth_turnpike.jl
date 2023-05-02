@@ -2,7 +2,7 @@ function test_simple_integrator_nonsmooth_turnpike()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:turnpike, :integrator, :state_energy, :state_dim_1, :control_dim_1, :lagrange, :control_constraint, :singular_arc) 
+    prob = Problem(:turnpike, :integrator, :state_energy, :x_dim_1, :u_dim_1, :lagrange, :u_cons, :singular_arc) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

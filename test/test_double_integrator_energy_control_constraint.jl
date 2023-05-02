@@ -2,7 +2,7 @@ function test_double_integrator_energy_control_constraint()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control_constraint) 
+    prob = Problem(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :u_cons) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

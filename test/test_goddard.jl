@@ -1,8 +1,8 @@
 function test_goddard()
 
     #
-    prob = Problem(:goddard, :classical, :altitude, :state_dim_3, :control_dim_1, 
-        :mayer, :state_constraint, :control_constraint, :singular_arc)
+    prob = Problem(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, 
+        :mayer, :x_cons, :u_cons, :singular_arc)
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -20,8 +20,8 @@ function test_goddard()
     mf = 0.6
 
     #
-    remove_constraint!(ocp, :state_constraint_r)
-    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    remove_constraint!(ocp, :x_cons_r)
+    g(x) = vmax-constraint(ocp, :x_cons_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     final_mass_cons(xf) = mf-constraint(ocp, :final_constraint)(xf)
 
     function F0(x)

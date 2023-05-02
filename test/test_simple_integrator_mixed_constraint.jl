@@ -2,7 +2,7 @@ function test_simple_integrator_mixed_constraint()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint) 
+    prob = Problem(:integrator, :x_dim_1, :u_dim_1, :lagrange, :mixed_constraint) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title

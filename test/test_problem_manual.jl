@@ -7,8 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control_constraint)
-
+prob = Problem(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange, :singular_arc)
 
 display(prob.model)
 
