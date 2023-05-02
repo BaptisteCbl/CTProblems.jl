@@ -82,6 +82,9 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     p(t) = [p0[1], -p0[1]*t+p0[2]]
     u(t) = (t ≤ t1(p0)) * γ + (t1(p0) < t < t2(p0)) * p(t)[2] + (t ≥ t2(p0)) * (-γ)
     objective = 0.5*γ^2*(t1(p0) + tf - t2(p0)) + 0.5*(1/3*(p0[1])^2*(t2(p0)^3 - t1(p0)^3) + p0[1]*p0[2]*(t1(p0)^2 - t2(p0)^2) + (p0[2])^2*(t2(p0) - t1(p0)))
+    
+    println(p0)
+    println(t1(p0),"  ",t2(p0))
 
     #
     N=201

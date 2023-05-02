@@ -1,8 +1,8 @@
-EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagrange, :control_constraint)
+EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagrange, :control_constraint, :control_differentiable)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "Orbital transfert - consumption minimisation - ∫ ‖u‖ dt "
+    title = "Orbital transfert - consumption minimisation differentiable - ∫ ‖u‖ dt "
 
     # the model
     n=4
@@ -35,20 +35,20 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
-    constraint!(ocp, :control, u -> u[1]^2 + u[2]^2, 0, 1, :control_constraint)
+    constraint!(ocp, :control, u -> u[1], 0, 1, :control_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; γ_max 0; 0 γ_max ]
-    constraint!(ocp, :dynamics, (x, u) -> A*([-μ*x[1]/(norm(x[1:2])^3);-μ*x[2]/(norm(x[1:2])^3);x[3];x[4]]) + B*u)
-    objective!(ocp, :lagrange, (x, u) -> norm(u[1:2])) # default is to minimise
+    constraint!(ocp, :dynamics, (x, u) -> A*([-μ*x[1]/(norm(x[1:2])^3);-μ*x[2]/(norm(x[1:2])^3);x[3];x[4]]) + B*[u[1]*cos(u[2]),u[1]*sin(u[2])])
+    objective!(ocp, :lagrange, (x, u) -> u[1]) # default is to minimise
 
     # the solution
     x0 = [x0; 0]
 
     u0(x,p) = [0, 0]
-    u1(x,p) = p[3:4]/norm(p[3:4])
+    u1(x,p) = [1, atan(p[3]/norm(p[3:4]),p[4]/norm(p[3:4]))]#p[3:4]/norm(p[3:4])
     
     Hc(x,p) = p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/norm(x[1:2])^3) + p[4]*(-μ*x[2]/norm(x[1:2])^3)
-    H(x,p,u) = -norm(u) + Hc(x,p) + u[1]*p[3]*γ_max + u[2]*p[4]*γ_max + p[5]*norm(u)
+    H(x,p,u) = -u[1] + Hc(x,p) + u[1]*cos(u[2])*p[3]*γ_max + u[1]*sin(u[2])*p[4]*γ_max + p[5]*u[1]
     H0(x,p) = H(x,p,u0(x,p)) 
     H1(x,p) = H(x,p,u1(x,p))
 
@@ -80,6 +80,7 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
     
     end;
 
+
     # Solve
     S(ξ) = shoot(ξ[1:5], ξ[6],ξ[7],ξ[8],ξ[9])
     jS(ξ) = ForwardDiff.jacobian(S, ξ)
@@ -91,7 +92,7 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
     ti_guess = [0.4556797711668658, 3.6289692721936913, 11.683607683450061, 12.505465498856514]
     ξ_guess  = [p0_guess;ti_guess]
 
-    #=
+    
     # Solve
     indirect_sol = fsolve(S!, jS!, ξ_guess, show_trace=true, tol=1e-8); println(indirect_sol)
     
@@ -104,14 +105,14 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
 
     p0 = ξ_sol[1:5]
     t1,t2,t3,t4 = ξ_sol[6:9]
-    =#
+    
 
-    p0 = p0_guess
-    t1, t2, t3, t4 = ti_guess
+    # p0 = p0_guess
+    # t1, t2, t3, t4 = ti_guess
 
     # computing x, p, u
     f = f1 * (t1, f0) * (t2, f1) * (t3, f0) * (t4, f1)
-    ode_sol  = f((t0, tf), x0, p0)
+    ode_sol  = g((t0, tf), x0, p0)
     
     x(t) = ode_sol(t)[1:4]
     p(t) = ode_sol(t)[6:9]
