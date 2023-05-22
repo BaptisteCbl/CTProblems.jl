@@ -1,4 +1,4 @@
-EXAMPLE=(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_cons)
+EXAMPLE=(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_cons, :non_diff_wrt_u)
 
 @eval function OCPDef{EXAMPLE}()
     # 

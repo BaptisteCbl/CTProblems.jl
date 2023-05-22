@@ -1,7 +1,7 @@
 name = "CTProblems"
 uuid = "45d9ea3f-a92f-411f-833f-222dd4fb9cd8"
 authors = ["Olivier Cots <olivier.cots@enseeiht.fr>"]
-version = "0.5.0"
+version = "0.5.1"
 
 [deps]
 CTBase = "54762871-cc72-4466-b8e8-f6c8b58076cd"

@@ -40,7 +40,7 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :noconstraints)
     β = p0[2]
     x(t) = [a+b*(t-t0)+β*(t-t0)^2/2.0-α*(t-t0)^3/6.0, b+β*(t-t0)-α*(t-t0)^2/2.0]
     p(t) = [α, -α*(t-t0)+β]
-    u(t) = [p(t)[2]]
+    u(t) = p(t)[2]
     objective = 0.5*(α^2*(tf-t0)^3/3+β^2*(tf-t0)-α*β*(tf-t0)^2)
     #
     N=201

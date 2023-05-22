@@ -1,7 +1,7 @@
 function test_orbital_transfer_consumption()
 
     # problem = model + solution
-    prob = Problem(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_cons) 
+    prob = Problem(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_cons, :non_diff_wrt_u) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
